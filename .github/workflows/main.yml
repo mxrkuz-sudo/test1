@@ -1,0 +1,37 @@
+name: Update README on Push
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Read current number
+        id: read-number
+        run: |
+          number=$(grep -oP '(?<=Zahl: )\d+' README.md)
+          echo "::set-output name=number::$number"
+
+      - name: Increment number
+        id: increment-number
+        run: |
+          current_number=$(echo "${{ steps.read-number.outputs.number }}")
+          new_number=$((current_number + 1))
+          echo "::set-output name=new_number::$new_number"
+
+      - name: Update README
+        run: |
+          sed -i "s/Zahl: ${{ steps.read-number.outputs.number }}/Zahl: ${{ steps.increment-number.outputs.new_number }}/" README.md
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update README with new number"
+          git push
