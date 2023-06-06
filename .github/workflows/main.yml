@@ -15,7 +15,7 @@ jobs:
       - name: Read current number
         id: read-number
         run: |
-          number=$(cat push_number 2>/dev/null)
+          number=$(grep -oP '(?<=Zahl: )\d+' README.md | head -n1)
           if [[ -z $number ]]; then
             number=0
           fi
