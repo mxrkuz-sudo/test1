@@ -30,7 +30,7 @@ jobs:
 
       - name: Write new number to file
         run: |
-          echo "${{ steps.increment-number.outputs.new_number }}" > push_number
+          echo "${{ steps.increment-number.outputs.new_number }}" >push_number
 
       - name: Commit changes
         run: |
@@ -38,8 +38,3 @@ jobs:
           git config --local user.name "GitHub Action"
           git add push_number
           git commit -m "Update push number"
-          
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.5.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
