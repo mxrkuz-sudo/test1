@@ -15,7 +15,10 @@ jobs:
       - name: Read current number
         id: read-number
         run: |
-          number=$(cat push_number)
+          number=$(cat push_number 2>/dev/null)
+          if [[ -z $number ]]; then
+            number=0
+          fi
           echo "::set-output name=number::$number"
 
       - name: Increment number
