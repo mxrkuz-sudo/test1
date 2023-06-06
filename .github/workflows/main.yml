@@ -1,0 +1,24 @@
+name: Notify on Readme Change
+on:
+  workflow_dispatch:
+  watch:
+    types: started
+
+jobs:
+  notify-on-readme-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check Readme Changes
+        id: readme-changes
+        run: |
+          git diff --name-only HEAD^ HEAD | grep -qE "README.md" || exit 0
+          echo "::set-output name=changed::true"
+
+      - name: Send Notification
+        if: steps.readme-changes.outputs.changed == 'true'
+        run: |
+          echo "Eine Änderung wurde in der README.md-Datei vorgenommen!"
