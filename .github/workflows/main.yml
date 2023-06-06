@@ -1,11 +1,11 @@
-name: Update README on Push
+name: Update Push Number
 on:
   push:
     branches:
       - main
 
 jobs:
-  update-readme:
+  update-push-number:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,7 @@ jobs:
       - name: Read current number
         id: read-number
         run: |
-          number=$(grep -oP '(?<=Zahl: )\d+' README.md)
+          number=$(cat push_number)
           echo "::set-output name=number::$number"
 
       - name: Increment number
@@ -25,13 +25,13 @@ jobs:
           new_number=$((current_number + 1))
           echo "::set-output name=new_number::$new_number"
 
-      - name: Update README
+      - name: Write new number to file
         run: |
-          sed -i "s/Zahl: ${{ steps.read-number.outputs.number }}/Zahl: ${{ steps.increment-number.outputs.new_number }}/" README.md
+          echo "${{ steps.increment-number.outputs.new_number }}" > push_number
 
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update README with new number"
+          git commit -am "Update push number"
           git push
