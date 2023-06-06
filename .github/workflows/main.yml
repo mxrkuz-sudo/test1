@@ -1,40 +1,19 @@
-name: Update Push Number
+name: Reset File On Readme Change
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'README.md'
 
 jobs:
-  update-push-number:
+  reset-file:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Read current number
-        id: read-number
+      - name: Reset File
         run: |
-          number=$(cat push_number 2>/dev/null)
-          if [[ -z $number ]]; then
-            number=0
-          fi
-          echo "::set-output name=number::$number"
-
-      - name: Increment number
-        id: increment-number
-        run: |
-          current_number=$(echo "${{ steps.read-number.outputs.number }}")
-          new_number=$((current_number + 1))
-          echo "::set-output name=new_number::$new_number"
-
-      - name: Write new number to file
-        run: |
-          echo "${{ steps.increment-number.outputs.new_number }}" >push_number
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add push_number
-          git commit -m "Update push number"
+          echo -n "" > reset
+          git add reset
+          git commit -m "Reset file"
