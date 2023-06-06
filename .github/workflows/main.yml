@@ -15,7 +15,7 @@ jobs:
       - name: Read current number
         id: read-number
         run: |
-          number=$(grep -oP '(?<=Zahl: )\d+' README.md | head -n1)
+          number=$(cat push_number 2>/dev/null)
           if [[ -z $number ]]; then
             number=0
           fi
@@ -32,9 +32,14 @@ jobs:
         run: |
           echo "${{ steps.increment-number.outputs.new_number }}" > push_number
 
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update push number"
-          git push
+          git add push_number
+          git commit -m "Update push number"
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.5.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
