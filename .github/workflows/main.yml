@@ -1,0 +1,17 @@
+name: Send Notification
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Send Notification
+        run: |
+          echo "Eine Änderung wurde auf dem Repository vorgenommen!"
